@@ -1,0 +1,36 @@
+.Login-container {
+    width: 350px;
+    border: 1px solid #eaeaea;
+    margin: 180px auto;
+    padding: 35px 35px 15px 35px;
+    background-color: #a7a096;
+    border-radius: 15px;
+    box-shadow: 0 0 25px #cac6c6;
+    text-align: center;
+  }
+
+  input {
+    width: 198px;
+  }
+  .loginbtn{
+    background-color: orange;
+  }
+  .registerbtn{
+    background-color: orange;
+  }
+  .cancelbtn{
+    background-color: orange;
+  }
+ 
+input {
+  width: 198px;
+}
+.loginbtn{
+  background-color: orange;
+}
+.registerbtn{
+  background-color: orange;
+}
+.cancelbtn{
+  background-color: orange;
+}
