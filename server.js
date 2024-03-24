@@ -45,6 +45,11 @@ app.get("/register", (req, res) => {
 app.get("/home", (req, res) => {
   res.sendFile(__dirname + "/home.html");
 });
+//添加游戏页面
+app.get("/add", (req, res) => {
+  res.sendFile(__dirname + "/add.html");
+});
+
 //Cart页面
 app.get("/cart", (req, res) => {
   res.sendFile(__dirname + "/cart.html");
