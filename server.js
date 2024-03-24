@@ -449,7 +449,35 @@ app.post('/purchase', (req, res) => {
 
 
 
-
+//cart ways buy games
+app.post('/cartbuy', (req, res) => {
+  const productId = req.body.productId;
+  const billprice = req.body.billprice;
+  const quantity = req.body.quantity;
+  var user_id = req.session.user_id;
+  // 尝试插入新记录，如果记录已存在则更新现有记录
+  connection.query(
+    'INSERT INTO bill(user_id, product_id, number_of_item, bill_price) VALUES (?, ?, ?, ?) ',
+    [user_id, productId, quantity, billprice],
+    (err, results) => {
+      if (err) {
+        console.error('Error inserting or updating sales record:', err);
+        res.status(500).json({ error: 'Internal Server Error' });
+        return;
+      }
+      console.log('Sales record inserted or updated successfully');
+      
+      // 构造购买成功的消息
+      const purchaseInfo = {
+        message: '购买成功！',
+        productId: productId,
+        quantity: quantity,
+        billprice: billprice
+      };
+      res.json(purchaseInfo); // 返回购买成功的消息给客户端
+    }
+  );
+});
 
 
 
