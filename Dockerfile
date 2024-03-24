@@ -1,21 +1,20 @@
-# Specify the base image from the official Node.js repository.
-FROM node:16
+# Using a specific version of node to ensure compatibility
+FROM node:14-alpine
  
-# Set the working directory inside the container to /usr/src/app.
-WORKDIR /usr/src/app
+# Set the working directory in the container
+WORKDIR /app
  
-# Copy package.json and package-lock.json (if available) to the container.
+# Copy package.json and package-lock.json to the working directory
 COPY package*.json ./
  
-# Install dependencies defined in package.json.
+# Install dependencies
 RUN npm install
  
-# Copy the rest of the application code to the container.
+# Copy the rest of the application code
 COPY . .
  
-# Expose the port your app runs on, e.g., 3000.
+# Expose the port the app runs on
 EXPOSE 3000
  
-# Define the command to run your app. 
-# (Change "server.js" to your app's entry point if different.)
-CMD ["node", "server.js"]
+# Command to run the application
+CMD ["npm", "start"]
