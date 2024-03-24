@@ -35,6 +35,10 @@ app.get("/", (req, res) => {
 app.get("/register", (req, res) => {
   res.sendFile(__dirname + "/register.html");
 });
+//首页页面
+app.get("/home", (req, res) => {
+  res.sendFile(__dirname + "/home.html");
+});
 
 // 连接到MySQL
 connection.connect((err) => {
