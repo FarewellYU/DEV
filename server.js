@@ -49,6 +49,10 @@ app.get("/home", (req, res) => {
 app.get("/cart", (req, res) => {
   res.sendFile(__dirname + "/cart.html");
 });
+//添加游戏页面
+app.get("/manage", (req, res) => {
+  res.sendFile(__dirname + "/manage.html");
+});
 
 // 连接到MySQL
 connection.connect((err) => {
@@ -361,6 +365,41 @@ app.post('/deleteCartItem', (req, res) => {
         return;
       }
       res.send("<script>window.alert('Item deleted from cart!'); window.location='/';</script>");
+    }
+  );
+});
+
+
+
+
+
+
+//management
+app.get("/management", (req, res) => {
+  var user_id = req.session.user_id; 
+
+  // 执行查询以检索特定用户的产品信息
+  connection.query(
+    "SELECT user_id, product_id, category_id, product_name, product_description, product_images, product_price, product_price_promotion FROM products WHERE user_id = ?",
+    [user_id],
+    (err, results) => {
+      if (err) {
+        console.error("Error querying database: " + err.stack);
+        res.status(500).send("Internal Server Error");
+        return;
+      }
+
+      // 将查询结果中的 BLOB 图像数据转换为 Base64 格式
+      results.forEach(function (product) {
+        if (product.product_images_base64) {
+          product.product_images_base64 =
+            product.product_images_base64.toString("base64");
+        }
+      });
+        console.log(results);
+      // 将查询结果发送给前端
+      console.log(results);
+      res.json(results);
     }
   );
 });
