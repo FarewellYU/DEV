@@ -408,6 +408,51 @@ app.get("/management", (req, res) => {
 
 
 
+
+
+
+
+//home page buy
+app.post('/purchase', (req, res) => {
+  const productId = req.body.productId; 
+  const productPrice = req.body.productPricepromotion; 
+  var user_id = req.session.user_id; 
+  // 尝试插入新记录，如果记录已存在则更新现有记录
+  connection.query(
+    'INSERT INTO bill(user_id, product_id, number_of_item, bill_price) VALUES (?, ?, 1, ?) ',
+    [user_id, productId, productPrice],
+    (err, results) => {
+      console.log(results);
+      if (err) {
+        console.error('Error inserting or updating sales record:', err);
+        res.status(500).json({ error: 'Internal Server Error' });
+        return;
+      }
+      console.log('Sales record inserted or updated successfully');
+      
+      // 构造包含购买信息的弹窗内容
+      const purchaseInfo = `You already purchased!，Product ID：${productId}，Price：${productPrice}`;
+      console.log('Purchase info:', purchaseInfo); // 添加调试信息
+      
+      const responseHtml = `
+        <script>
+          alert('${purchaseInfo}');
+        </script>
+      `;
+      console.log('Response HTML:', responseHtml); // 添加调试信息
+      res.json({ message: purchaseInfo });
+    }
+  );
+});
+
+
+
+
+
+
+
+
+
 // 监听端口
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
