@@ -53,6 +53,12 @@ app.get("/cart", (req, res) => {
 app.get("/manage", (req, res) => {
   res.sendFile(__dirname + "/manage.html");
 });
+//Top 10 sale game
+//添加游戏页面
+app.get("/top", (req, res) => {
+  res.sendFile(__dirname + "/top10.html");
+});
+
 
 // 连接到MySQL
 connection.connect((err) => {
