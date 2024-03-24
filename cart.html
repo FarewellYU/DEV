@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cart</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="style.css">
+
+    <script>
+    // 使用 Fetch API 发送请求到服务器获取用户相关的产品信息
+  fetch('/user/category')
+    .then(function(response) {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.json();
+    })
+    .then(function(data) {
+      var categories = data.categories; // 提取类别数组
+
+      // 获取下拉菜单元素
+      var categoryMenu = document.getElementById('categoryMenu');
+
+      // 清空现有的菜单项
+      categoryMenu.innerHTML = '';
+
+      // 创建一个 Set 来存储唯一的类别
+      var uniqueCategories = new Set(categories);
+
+      // 从 Set 转换为数组以便迭代
+      Array.from(uniqueCategories).forEach(function(categoryId) {
+        // 创建菜单项
+        var listItem = document.createElement('li');
+        listItem.innerHTML = '<a class="dropdown-item" href="#">' + categoryId + '</a>';
+        categoryMenu.appendChild(listItem);
+      });
+    })
+    .catch(function(error) {
+      console.error('Fetch error:', error);
+    });
+
+
+
+
+   
+     </script>
+  </head>
+  <body>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+      crossorigin="anonymous"
+    ></script>
+
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="#">
+          <img
+            src="/asset/icon.jpg"
+            style="border-radius: 50%"
+            width="60"
+            height="60"
+            class="icon"
+          />
+        </a>
+        <span id="navbar-text" style="font-size: 30px"
+          >GTAShop</span
+        >
+        &ensp; &ensp;&ensp; &ensp;&ensp; &ensp;
+
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarSupportedContent"
+          aria-controls="navbarSupportedContent"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+              <a
+                class="nav-link active"
+                aria-current="page"
+                style="font-size: 30px"
+                href="#"
+                onclick="window.location.href='/home'"
+                >Home</a
+              >
+            </li>
+            &ensp;&ensp;&ensp;&ensp;
+            <li class="nav-item">
+              <a
+                class="nav-link active"
+                aria-current="page"
+                style="font-size: 30px"
+                href="#"
+                onclick="window.location.href='/cart'"
+                >MyCart</a
+              >
+            </li>
+            &ensp;&ensp;&ensp;&ensp;
+            <li class="nav-item">
+              <a
+                class="nav-link active"
+                aria-current="page"
+                style="font-size: 30px"
+                href="#"
+                onclick="window.location.href='/manage'"
+                >Management</a
+              >
+            </li>
+            &ensp;&ensp;&ensp;&ensp;
+            <!-- 动态显示游戏种类 -->
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle"
+                style="font-size: 30px"
+                role="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                Category
+              </a>
+              <ul class="dropdown-menu" id="categoryMenu"></ul>
+            </li>
+            <li class="nav-item">
+              <a
+                class="nav-link active"
+                aria-current="page"
+                style="font-size: 30px"
+                href="#"
+                onclick="window.location.href='/top'"
+                >Top10</a
+              >
+            </li>
+            <!--  -->
+            &ensp; &ensp;&ensp; &ensp;&ensp; &ensp; &ensp; &ensp;&ensp;
+            &ensp;&ensp; &ensp; &ensp; &ensp;&ensp; &ensp;&ensp; &ensp; &ensp;
+            &ensp;&ensp; &ensp;&ensp; &ensp; &ensp; &ensp;&ensp; &ensp;&ensp;
+            &ensp;
+            <li class="nav-item">
+              <a
+                class="nav-link active"
+                aria-current="page"
+                style="font-size: 30px"
+                href="#"
+              >
+                <img
+                  onclick="window.location.href='/add'"
+                  src="/asset/add.jpg"
+                  alt="Bootstrap"
+                  width="50"
+                  height="50"
+                  class="rounded-circle"
+                />
+              </a>
+            </li>
+          
+          </ul>
+
+          </nav>
+
+
+   
+    
+          <div id="cartItems">
+            <table id="cartTable">
+              <thead>
+                <tr>
+                  <th>Product Image</th>
+                  <th>Game Name</th>
+                  <th>Description</th>
+                  <th>Price</th>
+                  <th>Promotion</th>
+                  <th>Quantity</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Cart items will be dynamically added here -->
+              </tbody>
+            </table>
+          </div>
+          <script>
+      
+// 添加购买按钮事件监听器
+function addBuyButtonEventListeners(buyButton, productId, quantityInput, product) {
+    // 先移除之前已经存在的事件监听器，然后再添加新的事件监听器
+    buyButton.removeEventListener('click', buyButtonClickHandler);
+    buyButton.addEventListener('click', buyButtonClickHandler);
+
+    function buyButtonClickHandler() {
+        var updatedQuantity = parseInt(quantityInput.value);
+        purchaseItem(productId, updatedQuantity, updatedQuantity * product.product_price_promotion, function(data) {
+            const purchaseInfo = `Purchase successful. Product ID: ${data.productId}, Quantity: ${data.quantity}, Total price: ${data.billprice}`;
+            alert(purchaseInfo);
+        });
+    }
+}
+
+// 添加删除按钮事件监听器
+function addDeleteButtonEventListeners(deleteButton, userId, productId) {
+    deleteButton.addEventListener('click', function() {
+        deleteCartItem(userId, productId);
+    });
+}
+
+// 获取购物车数据并渲染到页面
+fetch('/allcarts')
+    .then(function(response) {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(function(data) {
+        var cartItems = data.cart;
+        var tableBody = document.querySelector('#cartTable tbody');
+
+        cartItems.forEach(function(cartItem) {
+            var product = cartItem.productDetails;
+            var quantity = cartItem.cartItem.quantity;
+
+            var row = document.createElement('tr');
+
+            // 添加产品图片单元格
+            var imageCell = document.createElement('td');
+            var img = document.createElement('img');
+            img.src = 'data:image/jpeg;base64,' + product.product_images; // 使用Base64编码的图片数据
+            img.width = 100;
+            img.height = 100;
+            imageCell.appendChild(img);
+            row.appendChild(imageCell);
+
+            // 添加其他单元格...
+            var nameCell = document.createElement('td');
+            nameCell.textContent = product.product_name;
+            row.appendChild(nameCell);
+
+            var descriptionCell = document.createElement('td');
+            descriptionCell.textContent = product.product_description;
+            row.appendChild(descriptionCell);
+
+            var priceCell = document.createElement('td');
+            priceCell.textContent = product.product_price;
+            row.appendChild(priceCell);
+
+            var promotionCell = document.createElement('td');
+            promotionCell.textContent = product.product_price_promotion;
+            row.appendChild(promotionCell);
+
+            var quantityCell = document.createElement('td');
+            var quantityInput = document.createElement('input');
+            quantityInput.type = 'number';
+            quantityInput.value = quantity;
+            quantityInput.min = 1;
+            quantityCell.appendChild(quantityInput);
+            row.appendChild(quantityCell);
+
+            // 添加购买按钮
+            var buyCell = document.createElement('td');
+            var buyButton = document.createElement('button');
+            buyButton.textContent = 'Buy';
+            addBuyButtonEventListeners(buyButton, product.product_id, quantityInput, product); // 添加购买按钮的事件监听器
+            buyCell.appendChild(buyButton);
+            row.appendChild(buyCell);
+
+            // 添加删除按钮
+            var deleteCell = document.createElement('td');
+            var deleteButton = document.createElement('button');
+            deleteButton.textContent = 'Delete';
+            addDeleteButtonEventListeners(deleteButton, cartItem.cartItem.user_id, product.product_id); // 添加删除按钮的事件监听器
+            deleteCell.appendChild(deleteButton);
+            row.appendChild(deleteCell);
+
+            tableBody.appendChild(row);
+        });
+    })
+    .catch(function(error) {
+        console.error('Fetch error:', error);
+    });
+
+// 更新购物车中商品的数量
+function purchaseItem(productId, quantity, price, callback) {
+    fetch('/cartbuy', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            productId: productId,
+            quantity: quantity,
+            billprice: quantity * price // 使用传入的价格参数计算账单价格
+        })
+    })
+    .then(function(response) {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(function(data) {
+        // 购买成功时调用回调函数
+        callback(data);
+    })
+    .catch(function(error) {
+        console.error('Quantity update error:', error);
+    });
+}
+
+// 删除购物车项
+function deleteCartItem(userId, productId) {
+    fetch('/deleteCartItem', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            userId: userId,
+            productId: productId,
+        })
+    })
+    .then(function(response) {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(function(data) {
+        console.log('Cart item deleted successfully:', data);
+    })
+    .catch(function(error) {
+        console.error('Delete cart item error:', error);
+    });
+}
+        </script>
+        
+        
+  </body>
+</html>
