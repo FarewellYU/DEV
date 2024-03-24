@@ -1,5 +1,6 @@
 const express = require("express");
 const bodyParser = require("body-parser");
+const multer = require('multer');
 const mysql = require("mysql2");
 var path = require("path");
 const session = require("express-session");
@@ -21,6 +22,11 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname + "/public")));
 
+// 设置multer来处理上传的文件
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
+
+//mysql
 const connection = mysql.createConnection({
   host: "localhost",
   user: "root",
@@ -141,6 +147,40 @@ app.post("/register", (req, res) => {
     }
   );
 });
+
+// home page send game
+app.get("/products", (req, res) => {
+  var user_id = req.session.user_id; // 假设用户ID存储在 session 中的 user_id 变量中
+  
+  // 执行查询以检索特定用户的产品信息
+  connection.query(
+      "SELECT p.user_id, p.product_id, p.category_id, p.product_name, p.product_description, p.product_images, p.product_price, p.product_price_promotion, s.product_sales_count FROM products p LEFT JOIN sales s ON p.product_id = s.product_id WHERE p.user_id = ? ORDER BY RAND() LIMIT 4",
+      [user_id],
+      (err, results) => {
+          if (err) {
+              console.error("Error querying database: " + err.stack);
+              res.status(500).send("Internal Server Error");
+              return;
+          }
+
+          // 将图片数据转换为Base64编码的字符串
+          results.forEach(function(product) {
+              if (Buffer.isBuffer(product.product_images)) {
+                  // 将 Buffer 对象转换为 Base64 编码的字符串
+                  product.product_images = product.product_images.toString('base64');
+              }
+          });
+
+          // console.log(results);
+          res.json(results);
+      }
+  );
+});
+
+
+
+
+
 
 // 监听端口
 const port = process.env.PORT || 3000;
