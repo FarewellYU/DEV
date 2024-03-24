@@ -409,9 +409,6 @@ app.get("/management", (req, res) => {
 
 
 
-
-
-
 //home page buy
 app.post('/purchase', (req, res) => {
   const productId = req.body.productId; 
@@ -449,6 +446,9 @@ app.post('/purchase', (req, res) => {
 
 
 
+
+
+
 //cart ways buy games
 app.post('/cartbuy', (req, res) => {
   const productId = req.body.productId;
@@ -478,6 +478,7 @@ app.post('/cartbuy', (req, res) => {
     }
   );
 });
+
 
 
 
