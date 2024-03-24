@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+
+  web:
+
+    image: haoxuanyu/final:latest
+
+    ports:
+
+      - "8081:80"
+
+    volumes:
+
+      - .:/usr/src/app
+
+      - /usr/src/app/node_modules
+
+    environment:
+
+      NODE_ENV: production
