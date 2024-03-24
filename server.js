@@ -39,6 +39,10 @@ app.get("/register", (req, res) => {
 app.get("/home", (req, res) => {
   res.sendFile(__dirname + "/home.html");
 });
+//添加游戏页面
+app.get("/add", (req, res) => {
+  res.sendFile(__dirname + "/add.html");
+});
 
 // 连接到MySQL
 connection.connect((err) => {
@@ -138,6 +142,46 @@ app.post("/register", (req, res) => {
           }
         );
       }
+    }
+  );
+});
+
+//添加商品
+app.post("/addgoods", (req, res) => {
+  const {
+    product_name,
+    category_id,
+    product_description,
+    product_price,
+    product_images,
+    product_price_promotion,
+  } = req.body;
+ 
+  // 假设用户已经登录，并且登录信息中包含了 user_id
+  const user_id = req.session.user_id; // 这里假设通过 req.user 获取到了用户的登录信息
+  // 查询登录表获取用户的user_id
+
+  // 执行数据库插入操作
+  connection.query(
+    "INSERT INTO products (user_id, category_id, product_name, product_description, product_images,product_price, product_price_promotion) VALUES (?, ?, ?, ?, ?, ?,?)",
+    [
+      user_id,
+      category_id,
+      product_name,
+      product_description,
+      product_images,
+      product_price,
+      product_price_promotion,
+    ],
+    (err, results) => {
+      console.log(results);
+      if (err) {
+        console.error("Error inserting into database: " + err.stack);
+        res.status(500).send("Internal Server Error");
+        return;
+      }
+      console.log("Insertion results:", results); // 输出插入结果
+      res.send("Product inserted successfully!"); // 发送插入成功的消息
     }
   );
 });
