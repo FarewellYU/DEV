@@ -482,6 +482,107 @@ app.post('/cartbuy', (req, res) => {
 
 
 
+
+
+
+
+// Selase Top 10 games
+app.get('/topsales', (req, res) => {
+  const user_id = req.session.user_id;
+  console.log(user_id);
+
+  // 查询销量前十的游戏，并将具有相同 product_id 的 number_of_item 相加
+  connection.query(
+      'SELECT product_id, SUM(number_of_item) AS total_items FROM bill WHERE user_id = ? GROUP BY product_id ORDER BY total_items DESC LIMIT 10',
+      [user_id],
+      (err, results) => {
+          if (err) {
+              console.error('Error querying top sales:', err);
+              res.status(500).json({ error: 'Internal Server Error' });
+              return;
+          }
+
+          // 使用 Promise.all 来等待所有更新查询完成
+          Promise.all(results.map((row) => {
+              const productId = row.product_id;
+              const totalItems = row.total_items;
+
+              // 返回一个 Promise
+              return new Promise((resolve, reject) => {
+                  // 更新 sales 表中的 product_sales_item，如果记录不存在则插入新记录
+                  connection.query(
+                      'INSERT INTO sales (user_id, product_id, product_sales_count) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE product_sales_count = ?',
+                      
+                      [user_id, productId, totalItems, totalItems],
+                      (err, results) => {
+                          if (err) {
+                              reject(err);
+                              return;
+                          }
+                          resolve();
+                      }
+                  );
+              });
+          })).then(() => {
+              // console.log('All sales records inserted or updated successfully');
+              res.json({ success: true }); // 返回成功响应给客户端
+          }).catch((err) => {
+              console.error('Error inserting or updating sales records:', err);
+              res.status(500).json({ error: 'Internal Server Error' });
+          });
+      }
+  );
+});
+
+
+//consequence rank
+app.get('/consequence', (req, res) => {
+  const user_id = req.session.user_id;
+
+  // 查询指定 user_id 的 sales 表数据，并按照 product_sales_count 进行降序排列
+  connection.query(
+    'SELECT product_id, product_sales_count FROM sales WHERE user_id = ? ORDER BY product_sales_count DESC',
+    [user_id],
+    (err, results) => {
+      console.log(results);
+      if (err) {
+        console.error('Error querying sales records:', err);
+        res.status(500).json({ error: 'Internal Server Error' });
+        return;
+      }
+
+      // 获取查询结果中的 product_id 序列
+      const productIds = results.map(record => record.product_id);
+
+      // 查询 products 表中对应 product_id 的产品名称，并按照 product_id 降序排列
+      connection.query(
+        'SELECT product_id, product_name FROM products WHERE product_id IN (?) ORDER BY FIELD(product_id, ?)',
+        [productIds, productIds],
+        (err, productResults) => {
+          if (err) {
+            console.error('Error querying product names:', err);
+            res.status(500).json({ error: 'Internal Server Error' });
+            return;
+          }
+
+          // 将产品名称与销售数量合并
+          const salesWithNames = productResults.map(product => {
+            const salesRecord = results.find(record => record.product_id === product.product_id);
+            return {
+              product_id: product.product_id,
+              product_name: product.product_name,
+              product_sales_count: salesRecord ? salesRecord.product_sales_count : 0
+            };
+          });
+          console.log(productResults);
+          res.json({ success: true, sales: salesWithNames });
+        }
+      );
+    }
+  );
+});
+
+
 // 监听端口
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
