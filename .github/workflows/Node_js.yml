@@ -8,7 +8,6 @@ on:
  
 jobs:
   build:
-
     runs-on: ubuntu-latest
  
     strategy:
@@ -22,4 +21,3 @@ jobs:
               with:
                 node-version: '20.11.0'
                 npm-version: '10.2.4'
-
