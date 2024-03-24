@@ -4,10 +4,10 @@ services:
   db:
     image: mysql:5.7
     environment:
-      MYSQL_ROOT_PASSWORD: rootpassword
-      MYSQL_DATABASE: mydatabase
-    ports:
-      - "3306:3306"
+      MYSQL_ROOT_PASSWORD: 956282
+      MYSQL_DATABASE: WebProject
+    # ports: (This is optional and mainly used for external access to the database)
+    #   - "3306:3306"
  
   web:
     image: haoxuanyu/final:latest
@@ -18,3 +18,5 @@ services:
       - /usr/src/app/node_modules
     environment:
       NODE_ENV: production
+    depends_on:
+      - db
