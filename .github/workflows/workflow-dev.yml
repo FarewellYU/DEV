@@ -39,7 +39,7 @@ jobs:
                  key: ${{ secrets.SSH_KEY }}
                  port: ${{ secrets.SSH_PORT }}
                  source: '.env.example'
-                 target: 'app/'
+                 target: '/home/ubuntu/app/'
 
             - name: Copy docker-compose via ssh
               uses: appleboy/scp-action@master
@@ -49,7 +49,7 @@ jobs:
                 key: ${{ secrets.SSH_KEY }}
                 port: ${{ secrets.SSH_PORT }}
                 source: 'docker-compose.yml'
-                target: 'app/'
+                target: '/home/ubuntu/app/'
             
             - name: Check Root Dir
               uses: appleboy/ssh-action@v0.1.10
