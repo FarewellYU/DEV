@@ -5,13 +5,14 @@ FROM node:lts
 WORKDIR /app
  
 # Copy package.json and package-lock.json to the working directory
-COPY package*.json ./
- 
+COPY package*.json /app/
+COPY . /app/ 
+
 # Install dependencies
 RUN npm install
  
 # Copy the rest of the application code
-COPY . app/ 
+
 # Expose the port the app runs on
 EXPOSE 3000
  
