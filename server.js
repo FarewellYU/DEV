@@ -4,6 +4,8 @@ const multer = require('multer');
 const mysql = require("mysql2");
 var path = require("path");
 const session = require("express-session");
+require('dotenv').config()
+
 
 // 初始化Express应用程序
 const app = express();
