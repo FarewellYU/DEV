@@ -1,5 +1,5 @@
-# Using a specific version of node to ensure compatibility
-FROM node:14-alpine
+
+FROM node:lts
  
 # Set the working directory in the container
 WORKDIR /app
@@ -11,8 +11,7 @@ COPY package*.json ./
 RUN npm install
  
 # Copy the rest of the application code
-COPY . .
- 
+COPY . /app/ 
 # Expose the port the app runs on
 EXPOSE 3000
  

@@ -26,13 +26,43 @@ app.use(express.static(path.join(__dirname + "/public")));
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
-//mysql
-const connection = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "956282",
-  database: "webproject",
-});
+let config = {
+  host: process.env.DB_HOST,
+  user: process.env.DB_USERNAME,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME
+
+}
+
+function connect() {
+    connection = mysql.createConnection(config);
+    connection.connect((err) => {
+        if (err) {
+            console.error("Error connecting to the database:", err);
+            console.log("Retrying in 5 seconds");
+            setTimeout(connect, 5000)
+            return;
+        }
+        console.log("Database is connected");
+    });
+}
+
+connect()
+
+// DB_HOST=db
+// DB_USERNAME=root
+// DB_PASSWORD=956282
+// DB_NAME=webproject
+
+// //mysql
+// const connection = mysql.createConnection({
+//   host: "localhost",
+//   user: "root",
+//   password: "956282",
+//   database: "webproject",
+// });
+
+// const connection = mysql.createConnection(config)
 //默认页面
 app.get("/", (req, res) => {
   res.sendFile(__dirname + "/index.html");
