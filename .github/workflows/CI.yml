@@ -20,15 +20,12 @@ jobs:
         with:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_PASSWORD }}
-      - name: Detect functionality (Placeholder)
-        run: echo "Detecting functionality..."
       - name: Build and push Docker image
         uses: docker/build-push-action@v4
         with:
           context: .
-          file: ./Dockerfile
           push: true
-          tags: yourusername/yourappname:latest
+          tags: haoxuanyu/final-frontend:latest
       - name: Copy Docker Compose file via SSH
         uses: appleboy/scp-action@v0.1.4
         with:
@@ -37,7 +34,7 @@ jobs:
           key: ${{ secrets.HOST_SSH_PRIVATE_KEY }}
           port: 22
           source: "./docker-compose.yml"
-          target: "/remote/directory/path"
+          target: "/home/ubuntu/app/"
       - name: Execute Docker Compose on the remote server
         uses: appleboy/ssh-action@v0.1.10
         with:
@@ -46,8 +43,8 @@ jobs:
           key: ${{ secrets.HOST_SSH_PRIVATE_KEY }}
           port: 22
           script: |
-            cd /remote/directory/path
-            docker login --username ${{ secrets.DOCKER_HUB_USERNAME }} --password-stdin ${{ secrets.DOCKER_HUB_TOKEN }}
-            docker-compose down
-            docker-compose pull
-            docker-compose up -d
+            cd /home/ubuntu/app
+            echo ${{ secrets.DOCKER_HUB_TOKEN }} | docker login --username ${{ secrets.DOCKER_HUB_USERNAME }} --password-stdin 
+            docker compose down
+            docker compose pull
+            docker compose up -d
